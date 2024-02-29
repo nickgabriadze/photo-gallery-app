@@ -1,45 +1,14 @@
-.home-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    nav {
-        display: flex;
-        padding: 5px;
-        gap: 10px;
-        font-family: system-ui, sans-serif;
-
-        hr {
-            width: 3px;
-            background-color: black;
-            border: none;
-            border-radius: 5px;
-        }
-
-        & a {
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        & a:visited{
-            color: unset;
-        }
-        & a:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-    }
-}
 
 .searching-field {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
     align-items: center;
-    flex-direction: column;
-    justify-content: center;
     gap: 10px;
-    width: 50%;
     padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
 
     & h1 {
         font-family: 'Open Sans', system-ui, sans-serif;
@@ -47,14 +16,19 @@
         text-align: center;
     }
 }
+.icon-input-field{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
 .custom-input {
     height: 30px;
     border: 1px solid #a7a7a7;
     font-family: 'Open Sans', system-ui, sans-serif;
     padding: 5px;
-    width: 100%;
-    border-radius: 15px;
+    width: 300px;
+    border-radius: 7px;
 }
 
 .custom-input:focus {

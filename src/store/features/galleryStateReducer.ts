@@ -1,14 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {Page} from "../../types/types.ts";
+import {GalleryState} from "../../types/types.ts";
 
 
 
-const initialState={
+const initialState:GalleryState={
     currentPage: "Home",
     searchHistoryKeywords: [],
-
-
-
+    currentlySearchingFor: "",
 }
 
 
@@ -16,15 +14,17 @@ export const galleryState = createSlice({
     name: 'Gallery State',
     initialState,
     reducers: {
-        updateCurrentPage: (state, action:{payload:Page}) => {
-            return {
-                ...state,
-                currentPage: action.payload
-            }
-        }
+        updateCurrentlySearchingFor: (state, action:{payload:string}) =>{
+          return {
+              ...state,
+              currentlySearchingFor: action.payload,
+              searchHistoryKeywords: [...state.searchHistoryKeywords, action.payload]
+          }
+        },
+
     }
 })
 
-export const {updateCurrentPage} = galleryState.actions;
+export const {updateCurrentlySearchingFor} = galleryState.actions;
 
 export default galleryState.reducer;
