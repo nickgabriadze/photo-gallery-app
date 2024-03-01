@@ -38,8 +38,11 @@ export function Homepage() {
             setLoading(true)
             const request = await getPopularPictures(pageNumber);
             const data = request.data;
-            setPicturesData((prev) => [...prev, ...data])
-
+            if(pageNumber > 1){
+                setPicturesData((prev) => [...prev, ...data])
+            }else{
+                setPicturesData(data)
+            }
         } catch (e) {
             console.log(e)
         } finally {
