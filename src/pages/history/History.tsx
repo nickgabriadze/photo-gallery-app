@@ -1,14 +1,59 @@
 import historyStyle from '../history.module.css';
 import {useAppSelector} from "../../store/hooks.ts";
-import {useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
+import homeStyling from '../home/home.module.css';
+import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
+import {UnsplashPhoto} from "../../types.ts"
+import UnsplashPicture from "../home/components/unsplashPicture.tsx";
 
-export default function History(){
+export default function History() {
     document.title = "Gallery / History";
     const [chosenKeyword, setChosenKeyword] = useState<number>(-1);
     const historyKeywords = useAppSelector(s => s.galleryState.searchHistoryKeywords);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [historyPictures, setHistoryPictures] = useState<UnsplashPhoto[]>([]);
+    const observingPicture = useRef<null | IntersectionObserver>(null)
 
-    console.log(historyKeywords)
+    const lastPictureFetch = useCallback((lastPicture: HTMLDivElement | null) => {
+
+
+        if (!lastPicture) return;
+        if (loading) return;
+        if (observingPicture.current) observingPicture.current?.disconnect();
+        observingPicture.current = new IntersectionObserver((e) => {
+            if (e[0].isIntersecting) {
+                setPageNumber(prev => prev + 1)
+            }
+        });
+        observingPicture.current?.observe(lastPicture);
+
+
+    }, [loading])
+
+    useEffect(() => {
+        const getImagesUsingKeyword = async () => {
+            try {
+                setLoading(true)
+                const request = await getPhotosUsingSearchKeyword(historyKeywords[chosenKeyword], pageNumber)
+                const data = request.data.results;
+                setHistoryPictures((prev) => [...prev, ...data])
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setLoading(false)
+            }
+        }
+        if(chosenKeyword !== -1) getImagesUsingKeyword();
+        else setHistoryPictures([])
+
+    }, [chosenKeyword, historyKeywords, historyKeywords.length, pageNumber]);
+
+    useEffect(() => {
+        setHistoryPictures([])
+    }, [chosenKeyword]);
+
     return <main>
         <Link className={historyStyle['go-back-link']} to={'/'}>Go Home</Link>
         <h3>Recently searched</h3>
@@ -16,12 +61,33 @@ export default function History(){
 
             {historyKeywords.map((eachWord, i) => {
                 return <button
-                    onClick={() => setChosenKeyword(i)}
-                    style={chosenKeyword === i ? {backgroundColor: '#a7a7a7', color:'white'} : {backgroundColor:'white', color:'black'}}
+                    onClick={() => {
+                        if (chosenKeyword === i) {
+                            setChosenKeyword(-1)
+                        } else {
+                            setChosenKeyword(i)
+                        }
+                    }}
+                    style={chosenKeyword === i ? {
+                        backgroundColor: '#a7a7a7',
+                        color: 'white'
+                    } : {backgroundColor: 'white', color: 'black'}}
                     className={historyStyle['each-keyword']}
                     key={i}>{eachWord}</button>
             })}
         </div>
+
+
+        <div className={homeStyling['unsplash-pictures']}>
+            {historyPictures.map((eachPicture, i) => {
+
+                return <UnsplashPicture eachPicture={eachPicture}
+                                        key={eachPicture.id}
+                                        ref={historyPictures.length - 1 == i ? lastPictureFetch : null}/>
+
+            })}
+        </div>
+
 
     </main>
 }
