@@ -1,0 +1,58 @@
+main {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.history-keywords{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    width: 60%;
+
+}
+
+.each-keyword{
+    font-size: 1.2rem;
+    outline: 1px solid rgba(84, 70, 70, 0.68);
+    padding: 7px;
+    transition: all 300ms linear;
+}
+
+.each-keyword:hover{
+    scale: 1.02;
+}
+
+.each-keyword, h3, .go-back-link{
+    font-family: 'Open Sans', sans-serif;
+    font-weight: lighter;
+    border-radius: 18px;
+    cursor: pointer;
+}
+button{
+    border: none;
+}
+.go-back-link{
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin:10px;
+    padding: 7px;
+    border-radius: 5px;
+    background-color: whitesmoke;
+    text-decoration: none;
+    color: black;
+    outline: 1px solid black;
+}
+.go-back-link:hover{
+    scale: 1.02
+}
+.go-back-link:active{
+    scale: 0.98
+}

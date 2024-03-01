@@ -10,8 +10,11 @@ export function CustomInput() {
     console.log(currentlySearchingValue)
     const [placeHolderValue, setPlaceholderValue] = useState<string>('');
     useEffect(() => {
+
         const timeOut = setTimeout(() => {
-            dispatch(updateCurrentlySearchingFor(placeHolderValue))
+          if(placeHolderValue.trim().length !== 0){
+              dispatch(updateCurrentlySearchingFor(placeHolderValue))
+          }
         }, 200)
 
         return () => clearTimeout(timeOut);

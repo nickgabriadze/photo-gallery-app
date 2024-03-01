@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {GalleryState} from "../../types/types.ts";
+import {GalleryState} from "../../types.ts";
 
 
 
