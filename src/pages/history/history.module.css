@@ -16,23 +16,36 @@ main {
     padding: 10px;
     width: 60%;
 
+    & h4{
+        font-family: 'system-ui', sans-serif;
+    }
+
 }
 
 .each-keyword{
     font-size: 1.2rem;
-    outline: 1px solid rgba(84, 70, 70, 0.68);
     padding: 7px;
+    border-radius: 4px;
     transition: all 300ms linear;
+
+    & hr {
+        border-radius:  100%;
+        outline: 1px solid #424141;
+        padding: 2px;
+        box-shadow: 1px 1px 0 2px #424141 ;
+        background-color: #424141;
+    }
 }
+
 
 .each-keyword:hover{
     scale: 1.02;
+
 }
 
 .each-keyword, h3, .go-back-link{
     font-family: 'Open Sans', sans-serif;
     font-weight: lighter;
-    border-radius: 18px;
     cursor: pointer;
 }
 button{
@@ -42,15 +55,25 @@ button{
     position: relative;
     margin:10px;
     padding: 7px;
-    border-radius: 5px;
-    background-color: whitesmoke;
+    border-radius: 2px;
+    background-color: white;
     text-decoration: none;
-    color: black;
-    outline: 1px solid black;
+    outline: 1px solid #424141;
+    color: #424141;
+    box-shadow: 3px 3px 0 2px #424141;
+    transition: all 300ms linear;
 }
 .go-back-link:hover{
-    scale: 1.02
+    scale: 1.02;
+    color: #282424;
+    font-weight: bold;
+    box-shadow: 4px 4px 0 2px #424141;
+}
+.go-back-link:focus{
+    outline: 1px solid #424141;
+
 }
 .go-back-link:active{
-    scale: 0.98
+    scale: 0.95;
+    box-shadow: 1px 1px 0 2px #424141;
 }

@@ -14,23 +14,20 @@ import {setCache, setInCurrentView} from "../../store/features/galleryStateReduc
 import {v4} from "uuid"
 
 export function Homepage() {
+    document.title = "Gallery / Homepage"
     const [loading, setLoading] = useState<boolean>(true);
     const [picturesData, setPicturesData] = useState<UnsplashPhoto[]>([])
-    document.title = "Gallery / Homepage"
-    const cache = useAppSelector(s => s.galleryState.cache);
-    const currentlySearching = useAppSelector(s => s.galleryState.currentlySearchingFor);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const observingPicture = useRef<null | IntersectionObserver>(null);
     const dispatch = useAppDispatch();
-    const inCurrentView = useAppSelector(s => s.galleryState.inCurrentView);
     const [error, setError] = useState<boolean>(false);
-
+    const {inCurrentView, cache, currentlySearchingFor} = useAppSelector(s => s.galleryState)
     useEffect(() => {
         setPicturesData([])
         setPageNumber(1)
         dispatch(setInCurrentView([]))
+    }, [dispatch, currentlySearchingFor]);
 
-    }, [dispatch, currentlySearching]);
     const getPicturesByKeyword = async (currentlySearching: string, pageNumber: number) => {
         try {
             setLoading(true)
@@ -76,17 +73,17 @@ export function Homepage() {
     const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
 
     useEffect(() => {
-        if (currentlySearching.trim().length !== 0) {
-            if (cache[currentlySearching] && pageNumber === 1) {
-                setPicturesData(cache[currentlySearching])
+        if (currentlySearchingFor.trim().length !== 0) {
+            if (cache[currentlySearchingFor] && pageNumber === 1) {
+                setPicturesData(cache[currentlySearchingFor])
                 setLoading(false)
             } else {
-                getPicturesByKeyword(currentlySearching, pageNumber)
+                getPicturesByKeyword(currentlySearchingFor, pageNumber)
             }
         } else {
             getPictures(pageNumber)
         }
-    }, [pageNumber, currentlySearching]);
+    }, [pageNumber, currentlySearchingFor]);
 
     return <main>
 

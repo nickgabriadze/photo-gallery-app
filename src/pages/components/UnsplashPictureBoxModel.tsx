@@ -16,6 +16,7 @@ export function UnsplashPictureBoxModel() {
     const [picStats, setPicStats] = useState<UnsplashPhotoStats>()
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("")
+
     useEffect(() => {
         const getPictureById = async () => {
 
@@ -26,9 +27,7 @@ export function UnsplashPictureBoxModel() {
                 if (request.status === 200) {
                     setPicStats(data)
                 }
-            } catch (e) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
+            } catch (e:any) {
                 if (e.response.status === 403) {
                     setError('Rate Limitation')
                 }
@@ -55,14 +54,17 @@ export function UnsplashPictureBoxModel() {
                 </button>
             </div>
             <div className={pictureBoxStyling['unsplash-pic-wrapper']}>
-                <img src={inCurrentViewID.img_url} alt={inCurrentViewID.description}/>
+                <div className={pictureBoxStyling['unsplash-pic']}><img
+                    title={inCurrentViewID.description}
+                    src={inCurrentViewID.img_url} alt={inCurrentViewID.description}/>
+                </div>
 
                 {loading  ? <div className={pictureBoxStyling['stats-loading']}><img
                         alt={'Loading Icon'}
 
                         src={LoadingIcon}
                     ></img></div> :
-                    error.trim().length !== 0 ? <p>Rate Limitation</p> :
+                    error.trim().length !== 0 ? <p className={pictureBoxStyling['loading-error']}>Rate Limitation</p> :
                         <div className={pictureBoxStyling['unsplash-pic-stats']}>
                             <div>
                                 <img alt={'Likes Icon'} src={LikesIcon} width={20} height={20}></img>

@@ -13,7 +13,7 @@ export function CustomInput() {
           if(placeHolderValue.trim().length !== 0){
               dispatch(updateCurrentlySearchingFor(placeHolderValue))
           }
-        }, 200)
+        }, 500)
 
         return () => clearTimeout(timeOut);
     }, [placeHolderValue, dispatch]);
