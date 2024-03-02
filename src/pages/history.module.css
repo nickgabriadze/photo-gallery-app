@@ -39,9 +39,7 @@ button{
     border: none;
 }
 .go-back-link{
-    position: fixed;
-    top: 0;
-    right: 0;
+    position: relative;
     margin:10px;
     padding: 7px;
     border-radius: 5px;

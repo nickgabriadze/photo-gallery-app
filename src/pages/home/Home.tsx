@@ -5,11 +5,12 @@ import {Link} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import getPopularPictures from "../../api/getPopularPictures.ts";
 import {UnsplashPhoto} from "../../types.ts";
-import {useAppSelector} from "../../store/hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
 import UnsplashPicture from "./components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
+import {setInCurrentView} from "../../store/features/galleryStateReducer.ts";
 
 export function Homepage() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -18,7 +19,7 @@ export function Homepage() {
     const currentlySearching = useAppSelector(s => s.galleryState.currentlySearchingFor);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const observingPicture = useRef<null | IntersectionObserver>(null);
-
+    const dispatch = useAppDispatch();
     const inCurrentView = useAppSelector(s => s.galleryState.inCurrentView);
 
     const getPicturesByKeyword = async (currentlySearching: string, pageNumber: number) => {
@@ -26,9 +27,13 @@ export function Homepage() {
             setLoading(true)
             const request = await getPhotosUsingSearchKeyword(currentlySearching, pageNumber);
             const data = request.data.results;
-            setPicturesData((prev) => [...prev, ...data])
-
-
+            if (request.status === 200) {
+                if (pageNumber > 1) {
+                    setPicturesData((prev) => [...prev, ...data])
+                } else {
+                    setPicturesData(data)
+                }
+            }
         } catch (e) {
             console.log(e)
         } finally {
@@ -42,13 +47,13 @@ export function Homepage() {
             const request = await getPopularPictures(pageNumber);
             const data = request.data;
 
-          if(request.status === 200){
-              if (pageNumber > 1) {
-                  setPicturesData((prev) => [...prev, ...data])
-              } else {
-                  setPicturesData(data)
-              }
-          }
+            if (request.status === 200) {
+                if (pageNumber > 1) {
+                    setPicturesData((prev) => [...prev, ...data])
+                } else {
+                    setPicturesData(data)
+                }
+            }
         } catch (e) {
             console.log(e)
         } finally {
@@ -68,9 +73,12 @@ export function Homepage() {
 
     useEffect(() => {
         setPicturesData([])
-    }, [currentlySearching]);
+        setPageNumber(1)
+        dispatch(setInCurrentView([]))
 
-    console.log(picturesData)
+    }, [dispatch, currentlySearching]);
+
+
     return <main>
 
         {inCurrentView !== null && <UnsplashPictureBoxModel/>}
@@ -83,7 +91,6 @@ export function Homepage() {
             <nav>
                 <Link to={'/history'} className={homeStyling['go-to-history-link']}>HISTORY</Link>
             </nav>
-
 
         </div>
         <div className={homeStyling['unsplash-pictures']}>

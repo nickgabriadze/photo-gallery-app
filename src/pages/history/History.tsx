@@ -1,5 +1,5 @@
 import historyStyle from '../history.module.css';
-import {useAppSelector} from "../../store/hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import homeStyling from '../home/home.module.css';
@@ -8,6 +8,7 @@ import {UnsplashPhoto} from "../../types.ts"
 import UnsplashPicture from "../home/components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
+import {setInCurrentView} from "../../store/features/galleryStateReducer.ts";
 
 export default function History() {
     document.title = "Gallery / History";
@@ -20,7 +21,7 @@ export default function History() {
     const observingPicture = useRef<null | IntersectionObserver>(null)
 
     const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber})
-
+    const dispatch = useAppDispatch();
     useEffect(() => {
         const getImagesUsingKeyword = async () => {
             try {
@@ -43,7 +44,9 @@ export default function History() {
 
     useEffect(() => {
         setHistoryPictures([])
-    }, [chosenKeyword]);
+        dispatch(setInCurrentView([]))
+        setPageNumber(1)
+    }, [dispatch, chosenKeyword]);
 
     return <main>
 
