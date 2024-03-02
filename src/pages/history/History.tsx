@@ -1,5 +1,5 @@
-import historyStyle from '../history.module.css';
-import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
+import historyStyle from './history.module.css';
+import {useAppDispatch, useAppSelector} from "../../store/toolkitHooks.ts";
 import {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import homeStyling from '../home/home.module.css';

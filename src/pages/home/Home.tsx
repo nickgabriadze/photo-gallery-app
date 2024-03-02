@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import getPopularPictures from "../../api/getPopularPictures.ts";
 import {UnsplashPhoto} from "../../types.ts";
-import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../store/toolkitHooks.ts";
 import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
 import UnsplashPicture from "./components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";

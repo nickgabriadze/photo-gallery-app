@@ -1,7 +1,7 @@
 import pictureBoxStyling from './unsplashpicture.module.css';
 import {useEffect, useState} from "react";
 import getPhotoByID from "../../api/getPhotoByID.ts";
-import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../store/toolkitHooks.ts";
 import DownloadsIcon from './icons/downloads.svg'
 import LikesIcon from './icons/likes.svg'
 import ViewsIcon from './icons/views.svg'

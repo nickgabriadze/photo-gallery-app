@@ -1,7 +1,7 @@
 import homeStyling from "../home.module.css";
 import {UnsplashPhoto} from "../../../types.ts";
 import {forwardRef, LegacyRef} from "react";
-import {useAppDispatch} from "../../../store/hooks.ts";
+import {useAppDispatch} from "../../../store/toolkitHooks.ts";
 import {setInCurrentView} from "../../../store/features/galleryStateReducer.ts";
 
 const UnsplashPicture = forwardRef(function UnsplashPicture({eachPicture}: { eachPicture: UnsplashPhoto | undefined }, ref:LegacyRef<HTMLDivElement> | null) {

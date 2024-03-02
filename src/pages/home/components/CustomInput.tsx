@@ -1,5 +1,5 @@
 import homeStyling from '../home.module.css';
-import {useAppDispatch} from "../../../store/hooks.ts";
+import {useAppDispatch} from "../../../store/toolkitHooks.ts";
 import {useEffect, useState} from "react";
 import {updateCurrentlySearchingFor} from "../../../store/features/galleryStateReducer.ts";
 
