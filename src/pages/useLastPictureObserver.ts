@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 
-export function useLastPictureObserver({loading, observingPicture, setPageNumber}
-    :{loading: boolean, observingPicture:  React.MutableRefObject<IntersectionObserver | null>, setPageNumber: React.Dispatch<React.SetStateAction<number>> }
+export function useLastPictureObserver({loading, observingPicture, setPageNumber, error}
+    :{loading: boolean, observingPicture:  React.MutableRefObject<IntersectionObserver | null>, setPageNumber: React.Dispatch<React.SetStateAction<number>>, error: boolean}
 ) {
     
     
@@ -10,6 +10,7 @@ export function useLastPictureObserver({loading, observingPicture, setPageNumber
 
         if (!lastPicture) return;
         if (loading) return;
+        if(error) return;
         if (observingPicture.current) observingPicture.current.disconnect();
         observingPicture.current = new IntersectionObserver((e) => {
             if (e[0].isIntersecting) {
@@ -19,7 +20,7 @@ export function useLastPictureObserver({loading, observingPicture, setPageNumber
         observingPicture.current?.observe(lastPicture);
 
 
-    }, [loading, observingPicture, setPageNumber])
+    }, [loading, observingPicture, setPageNumber, error])
 
     
     return {lastPictureFetch}

@@ -7,7 +7,8 @@ const initialState:GalleryState={
     currentPage: "Home",
     searchHistoryKeywords: [],
     currentlySearchingFor: "",
-    inCurrentView: null
+    inCurrentView: null,
+    cache:{}
 }
 
 
@@ -31,7 +32,9 @@ export const galleryState = createSlice({
                     description: action.payload[2]
                 }
             }
-        }
+        },
+
+
     }
 })
 

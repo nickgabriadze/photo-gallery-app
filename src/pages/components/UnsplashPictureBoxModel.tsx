@@ -15,18 +15,24 @@ export function UnsplashPictureBoxModel() {
     const inCurrentViewID = useAppSelector(s => s.galleryState.inCurrentView);
     const [picStats, setPicStats] = useState<UnsplashPhotoStats>()
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [error, setError] = useState<string>("")
     useEffect(() => {
         const getPictureById = async () => {
+
             try {
                 setLoading(true)
                 const request = await getPhotoByID(String(inCurrentViewID?.id));
                 const data = request.data;
-                if(request.status === 200){
+                if (request.status === 200) {
                     setPicStats(data)
                 }
             } catch (e) {
-                console.log(e)
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                if (e.response.status === 403) {
+                    setError('Rate Limitation')
+                }
+                setLoading(false)
             } finally {
                 setLoading(false)
             }
@@ -38,39 +44,41 @@ export function UnsplashPictureBoxModel() {
     if (inCurrentViewID === null) return
 
 
-    return <div className={pictureBoxStyling['unsplash-pic-modal']}>
+
+        return <div className={pictureBoxStyling['unsplash-pic-modal']}>
         <div className={pictureBoxStyling['unsplash-pic-outer-wrapper']}>
             <div className={pictureBoxStyling['title-close']}>
                 <h3>{inCurrentViewID.description[0].toUpperCase().concat(inCurrentViewID.description.slice(1,))}</h3>
                 <button
-                onClick={() => dispatch(setInCurrentView([]))}
+                    onClick={() => dispatch(setInCurrentView([]))}
                 ><img alt={'Close Icon'} src={CloseIcon} width={30} height={30}/>
                 </button>
             </div>
             <div className={pictureBoxStyling['unsplash-pic-wrapper']}>
                 <img src={inCurrentViewID.img_url} alt={inCurrentViewID.description}/>
 
-                {loading || picStats === undefined ? <div className={pictureBoxStyling['stats-loading']}><img
+                {loading  ? <div className={pictureBoxStyling['stats-loading']}><img
                         alt={'Loading Icon'}
 
-                    src={LoadingIcon}
+                        src={LoadingIcon}
                     ></img></div> :
-                    <div className={pictureBoxStyling['unsplash-pic-stats']}>
-                        <div>
-                            <img alt={'Likes Icon'} src={LikesIcon} width={20} height={20}></img>
-                            <p>{Number(picStats.likes.total)}</p>
+                    error.trim().length !== 0 ? <p>Rate Limitation</p> :
+                        <div className={pictureBoxStyling['unsplash-pic-stats']}>
+                            <div>
+                                <img alt={'Likes Icon'} src={LikesIcon} width={20} height={20}></img>
+                                <p>{Number(picStats?.likes.total)}</p>
+                            </div>
+                            <div>
+                                <img alt={'Views Icon'} src={ViewsIcon} width={20} height={20}></img>
+                                <p>{Number(picStats?.views.total)}</p>
+                            </div>
+                            <div>
+                                <img alt={'Downloads Icon'} src={DownloadsIcon} width={20} height={20}></img>
+                                <p>{Number(picStats?.downloads.total)}</p>
+                            </div>
                         </div>
-                        <div>
-                            <img alt={'Views Icon'} src={ViewsIcon} width={20} height={20}></img>
-                            <p>{Number(picStats.views.total)}</p>
-                        </div>
-                        <div>
-                            <img alt={'Downloads Icon'} src={DownloadsIcon} width={20} height={20}></img>
-                            <p>{Number(picStats.downloads.total)}</p>
-                        </div>
-                    </div>
                 }
             </div>
         </div>
-    </div>
+        </div>
 }

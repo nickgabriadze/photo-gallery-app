@@ -9,6 +9,7 @@ import UnsplashPicture from "../home/components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
 import {setInCurrentView} from "../../store/features/galleryStateReducer.ts";
+import {v4} from "uuid";
 
 export default function History() {
     document.title = "Gallery / History";
@@ -19,8 +20,8 @@ export default function History() {
     const [loading, setLoading] = useState<boolean>(true);
     const [historyPictures, setHistoryPictures] = useState<UnsplashPhoto[]>([]);
     const observingPicture = useRef<null | IntersectionObserver>(null)
-
-    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber})
+    const [error, setError] = useState<boolean>(false);
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
     const dispatch = useAppDispatch();
     useEffect(() => {
         const getImagesUsingKeyword = async () => {
@@ -32,7 +33,7 @@ export default function History() {
                     setHistoryPictures((prev) => [...prev, ...data])
                 }
             } catch (e) {
-                console.log(e)
+                setError(true)
             } finally {
                 setLoading(false)
             }
@@ -79,7 +80,7 @@ export default function History() {
             {historyPictures.map((eachPicture, i) => {
 
                 return <UnsplashPicture eachPicture={eachPicture}
-                                        key={eachPicture.id}
+                                        key={v4()}
                                         ref={historyPictures.length - 1 == i ? lastPictureFetch : null}/>
 
             })}

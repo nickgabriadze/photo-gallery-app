@@ -10,7 +10,8 @@ export type GalleryState = {
         id: string,
         img_url: string,
         description: string
-    }
+    },
+    cache:{[key:string]: UnsplashPhoto[]}
 
 }
 

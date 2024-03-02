@@ -11,7 +11,7 @@ import UnsplashPicture from "./components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
 import {setInCurrentView} from "../../store/features/galleryStateReducer.ts";
-
+import {v4} from "uuid"
 export function Homepage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [picturesData, setPicturesData] = useState<UnsplashPhoto[]>([])
@@ -21,21 +21,21 @@ export function Homepage() {
     const observingPicture = useRef<null | IntersectionObserver>(null);
     const dispatch = useAppDispatch();
     const inCurrentView = useAppSelector(s => s.galleryState.inCurrentView);
-
+    const [error, setError] = useState<boolean>(false);
     const getPicturesByKeyword = async (currentlySearching: string, pageNumber: number) => {
         try {
             setLoading(true)
             const request = await getPhotosUsingSearchKeyword(currentlySearching, pageNumber);
             const data = request.data.results;
             if (request.status === 200) {
-                if (pageNumber > 1) {
+                if (pageNumber > 1 && !error) {
                     setPicturesData((prev) => [...prev, ...data])
                 } else {
                     setPicturesData(data)
                 }
             }
         } catch (e) {
-            console.log(e)
+            setError(true)
         } finally {
             setLoading(false);
         }
@@ -48,19 +48,19 @@ export function Homepage() {
             const data = request.data;
 
             if (request.status === 200) {
-                if (pageNumber > 1) {
+                if (pageNumber > 1 && !error) {
                     setPicturesData((prev) => [...prev, ...data])
                 } else {
                     setPicturesData(data)
                 }
             }
         } catch (e) {
-            console.log(e)
+            setError(true)
         } finally {
             setLoading(false);
         }
     }
-    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber})
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
 
     useEffect(() => {
         if (currentlySearching.trim().length !== 0) {
@@ -97,7 +97,7 @@ export function Homepage() {
             {picturesData.map((eachPicture, i) => {
 
                 return <UnsplashPicture eachPicture={eachPicture}
-                                        key={eachPicture.id}
+                                        key={v4()}
                                         ref={picturesData.length - 1 === i ? lastPictureFetch : null}/>
 
             })}
