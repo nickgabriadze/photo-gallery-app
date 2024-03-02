@@ -9,6 +9,7 @@ import {useAppSelector} from "../../store/hooks.ts";
 import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
 import UnsplashPicture from "./components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
+import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
 
 export function Homepage() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -18,6 +19,7 @@ export function Homepage() {
     const [pageNumber, setPageNumber] = useState<number>(1);
     const observingPicture = useRef<null | IntersectionObserver>(null);
 
+    const inCurrentView = useAppSelector(s => s.galleryState.inCurrentView);
 
     const getPicturesByKeyword = async (currentlySearching: string, pageNumber: number) => {
         try {
@@ -39,11 +41,14 @@ export function Homepage() {
             setLoading(true)
             const request = await getPopularPictures(pageNumber);
             const data = request.data;
-            if (pageNumber > 1) {
-                setPicturesData((prev) => [...prev, ...data])
-            } else {
-                setPicturesData(data)
-            }
+
+          if(request.status === 200){
+              if (pageNumber > 1) {
+                  setPicturesData((prev) => [...prev, ...data])
+              } else {
+                  setPicturesData(data)
+              }
+          }
         } catch (e) {
             console.log(e)
         } finally {
@@ -65,7 +70,10 @@ export function Homepage() {
         setPicturesData([])
     }, [currentlySearching]);
 
+    console.log(picturesData)
     return <main>
+
+        {inCurrentView !== null && <UnsplashPictureBoxModel/>}
 
         <div className={homeStyling['searching-field']}>
             <div className={homeStyling["icon-input-field"]}>

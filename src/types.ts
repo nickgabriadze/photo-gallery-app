@@ -1,10 +1,16 @@
+
 export type Page = "Home" | "History";
 export type HistoryKeywords = string[];
 
 export type GalleryState = {
     currentPage: Page,
     currentlySearchingFor: string,
-    searchHistoryKeywords: HistoryKeywords
+    searchHistoryKeywords: HistoryKeywords,
+    inCurrentView: null | {
+        id: string,
+        img_url: string,
+        description: string
+    }
 
 }
 
@@ -29,5 +35,17 @@ export type UnsplashPhoto = {
         small_s3: string,
         thumb: string
     }
+}
 
+export type UnsplashPhotoStats = {
+    id: string,
+    downloads:{
+        total: number
+    },
+    views:{
+        total: number
+    },
+    likes:{
+        total: number
+    }
 }

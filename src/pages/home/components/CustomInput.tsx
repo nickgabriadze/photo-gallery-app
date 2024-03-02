@@ -1,13 +1,11 @@
 import homeStyling from '../home.module.css';
-import {useAppDispatch, useAppSelector} from "../../../store/hooks.ts";
+import {useAppDispatch} from "../../../store/hooks.ts";
 import {useEffect, useState} from "react";
 import {updateCurrentlySearchingFor} from "../../../store/features/galleryStateReducer.ts";
 
 
 export function CustomInput() {
     const dispatch = useAppDispatch();
-    const currentlySearchingValue = useAppSelector(s => s.galleryState.currentlySearchingFor);
-    console.log(currentlySearchingValue)
     const [placeHolderValue, setPlaceholderValue] = useState<string>('');
     useEffect(() => {
 

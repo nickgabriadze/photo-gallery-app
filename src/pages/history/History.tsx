@@ -7,9 +7,11 @@ import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.t
 import {UnsplashPhoto} from "../../types.ts"
 import UnsplashPicture from "../home/components/unsplashPicture.tsx";
 import {useLastPictureObserver} from "../useLastPictureObserver.ts";
+import {UnsplashPictureBoxModel} from "../components/UnsplashPictureBoxModel.tsx";
 
 export default function History() {
     document.title = "Gallery / History";
+    const inCurrentView = useAppSelector(s => s.galleryState.inCurrentView);
     const [chosenKeyword, setChosenKeyword] = useState<number>(-1);
     const historyKeywords = useAppSelector(s => s.galleryState.searchHistoryKeywords);
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -25,7 +27,9 @@ export default function History() {
                 setLoading(true)
                 const request = await getPhotosUsingSearchKeyword(historyKeywords[chosenKeyword], pageNumber)
                 const data = request.data.results;
-                setHistoryPictures((prev) => [...prev, ...data])
+                if(request.status === 200) {
+                    setHistoryPictures((prev) => [...prev, ...data])
+                }
             } catch (e) {
                 console.log(e)
             } finally {
@@ -42,6 +46,9 @@ export default function History() {
     }, [chosenKeyword]);
 
     return <main>
+
+        {inCurrentView !== null && <UnsplashPictureBoxModel/>}
+
         <Link className={historyStyle['go-back-link']} to={'/'}>Go Home</Link>
         <h3>Recently searched</h3>
         <div className={historyStyle['history-keywords']}>
