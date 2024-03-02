@@ -1,11 +1,12 @@
 import historyStyle from '../history.module.css';
 import {useAppSelector} from "../../store/hooks.ts";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import homeStyling from '../home/home.module.css';
 import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
 import {UnsplashPhoto} from "../../types.ts"
 import UnsplashPicture from "../home/components/unsplashPicture.tsx";
+import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 
 export default function History() {
     document.title = "Gallery / History";
@@ -16,21 +17,7 @@ export default function History() {
     const [historyPictures, setHistoryPictures] = useState<UnsplashPhoto[]>([]);
     const observingPicture = useRef<null | IntersectionObserver>(null)
 
-    const lastPictureFetch = useCallback((lastPicture: HTMLDivElement | null) => {
-
-
-        if (!lastPicture) return;
-        if (loading) return;
-        if (observingPicture.current) observingPicture.current?.disconnect();
-        observingPicture.current = new IntersectionObserver((e) => {
-            if (e[0].isIntersecting) {
-                setPageNumber(prev => prev + 1)
-            }
-        });
-        observingPicture.current?.observe(lastPicture);
-
-
-    }, [loading])
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber})
 
     useEffect(() => {
         const getImagesUsingKeyword = async () => {
@@ -59,7 +46,7 @@ export default function History() {
         <h3>Recently searched</h3>
         <div className={historyStyle['history-keywords']}>
 
-            {historyKeywords.map((eachWord, i) => {
+            {historyKeywords.length === 0 ? <h4>you haven't searched for anything</h4> :historyKeywords.map((eachWord, i) => {
                 return <button
                     onClick={() => {
                         if (chosenKeyword === i) {

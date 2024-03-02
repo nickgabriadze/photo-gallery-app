@@ -2,12 +2,13 @@ import {CustomInput} from "./components/CustomInput.tsx";
 import homeStyling from './home.module.css';
 import UnsplashIcon from '../../icons/unsplash-icon.png'
 import {Link} from "react-router-dom";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import getPopularPictures from "../../api/getPopularPictures.ts";
 import {UnsplashPhoto} from "../../types.ts";
 import {useAppSelector} from "../../store/hooks.ts";
 import getPhotosUsingSearchKeyword from "../../api/getPhotosUsingSearchKeyword.ts";
 import UnsplashPicture from "./components/unsplashPicture.tsx";
+import {useLastPictureObserver} from "../useLastPictureObserver.ts";
 
 export function Homepage() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -38,9 +39,9 @@ export function Homepage() {
             setLoading(true)
             const request = await getPopularPictures(pageNumber);
             const data = request.data;
-            if(pageNumber > 1){
+            if (pageNumber > 1) {
                 setPicturesData((prev) => [...prev, ...data])
-            }else{
+            } else {
                 setPicturesData(data)
             }
         } catch (e) {
@@ -49,26 +50,12 @@ export function Homepage() {
             setLoading(false);
         }
     }
-    const lastPictureFetch = useCallback((lastPicture: HTMLDivElement | null) => {
-
-
-        if (!lastPicture) return;
-        if (loading) return;
-        if (observingPicture.current) observingPicture.current?.disconnect();
-        observingPicture.current = new IntersectionObserver((e) => {
-            if (e[0].isIntersecting) {
-                setPageNumber(prev => prev + 1)
-            }
-        });
-        observingPicture.current?.observe(lastPicture);
-
-
-    }, [loading])
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber})
 
     useEffect(() => {
         if (currentlySearching.trim().length !== 0) {
             getPicturesByKeyword(currentlySearching, pageNumber)
-        }else{
+        } else {
             getPictures(pageNumber)
         }
     }, [pageNumber, currentlySearching]);
@@ -94,9 +81,9 @@ export function Homepage() {
         <div className={homeStyling['unsplash-pictures']}>
             {picturesData.map((eachPicture, i) => {
 
-                    return <UnsplashPicture eachPicture={eachPicture}
-                                            key={eachPicture.id}
-                                            ref={picturesData.length - 1 === i ? lastPictureFetch : null}/>
+                return <UnsplashPicture eachPicture={eachPicture}
+                                        key={eachPicture.id}
+                                        ref={picturesData.length - 1 === i ? lastPictureFetch : null}/>
 
             })}
         </div>
