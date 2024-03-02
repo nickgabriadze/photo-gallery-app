@@ -23,31 +23,42 @@ export default function History() {
     const [error, setError] = useState<boolean>(false);
     const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
     const dispatch = useAppDispatch();
-    useEffect(() => {
-        const getImagesUsingKeyword = async () => {
-            try {
-                setLoading(true)
-                const request = await getPhotosUsingSearchKeyword(historyKeywords[chosenKeyword], pageNumber)
-                const data = request.data.results;
-                if(request.status === 200) {
-                    setHistoryPictures((prev) => [...prev, ...data])
-                }
-            } catch (e) {
-                setError(true)
-            } finally {
-                setLoading(false)
-            }
-        }
-        if(chosenKeyword !== -1) getImagesUsingKeyword();
-        else setHistoryPictures([])
-
-    }, [chosenKeyword, historyKeywords, historyKeywords.length, pageNumber]);
+    const cache = useAppSelector(s => s.galleryState.cache)
 
     useEffect(() => {
         setHistoryPictures([])
         dispatch(setInCurrentView([]))
         setPageNumber(1)
     }, [dispatch, chosenKeyword]);
+
+
+    useEffect(() => {
+        const getImagesUsingKeyword = async () => {
+            if (pageNumber > 1) {
+                try {
+                    setLoading(true)
+                    const request = await getPhotosUsingSearchKeyword(historyKeywords[chosenKeyword], pageNumber)
+                    const data = request.data.results;
+                    if (request.status === 200) {
+                        setHistoryPictures((prev) => [...prev, ...data])
+                    }
+                } catch (e) {
+                    setError(true)
+                } finally {
+                    setLoading(false)
+                }
+            } else {
+                setHistoryPictures(cache[historyKeywords[chosenKeyword]])
+                setLoading(false)
+            }
+        }
+
+        if (chosenKeyword !== -1) {
+            getImagesUsingKeyword()
+        } else setHistoryPictures([])
+
+    }, [chosenKeyword, historyKeywords, historyKeywords.length, pageNumber]);
+
 
     return <main>
 
@@ -57,23 +68,25 @@ export default function History() {
         <h3>Recently searched</h3>
         <div className={historyStyle['history-keywords']}>
 
-            {historyKeywords.length === 0 ? <h4>you haven't searched for anything</h4> :historyKeywords.map((eachWord, i) => {
-                return <button
-                    onClick={() => {
-                        if (chosenKeyword === i) {
-                            setChosenKeyword(-1)
-                        } else {
-                            setChosenKeyword(i)
-                        }
-                    }}
-                    style={chosenKeyword === i ? {
-                        backgroundColor: '#a7a7a7',
-                        color: 'white'
-                    } : {backgroundColor: 'white', color: 'black'}}
-                    className={historyStyle['each-keyword']}
-                    key={i}>{eachWord}</button>
-            })}
+            {historyKeywords.length === 0 ?
+                <h4>you haven't searched for anything</h4> : historyKeywords.map((eachWord, i) => {
+                    return <button
+                        onClick={() => {
+                            if (chosenKeyword === i) {
+                                setChosenKeyword(-1)
+                            } else {
+                                setChosenKeyword(i)
+                            }
+                        }}
+                        style={chosenKeyword === i ? {
+                            backgroundColor: '#a7a7a7',
+                            color: 'white'
+                        } : {backgroundColor: 'white', color: 'black'}}
+                        className={historyStyle['each-keyword']}
+                        key={i}>{eachWord}</button>
+                })}
         </div>
+
 
 
         <div className={homeStyling['unsplash-pictures']}>
@@ -83,7 +96,8 @@ export default function History() {
                                         key={v4()}
                                         ref={historyPictures.length - 1 == i ? lastPictureFetch : null}/>
 
-            })}
+            })
+            }
         </div>
 
 
