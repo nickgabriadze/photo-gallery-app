@@ -20,7 +20,7 @@ export default function History() {
     const observingPicture = useRef<null | IntersectionObserver>(null)
     const [error, setError] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const [totalPages, setTotalPages] = useState<number>(2);
+    const [totalPages, setTotalPages] = useState<number | "UNLIMITED">("UNLIMITED");
     const {cache, inCurrentView, searchHistoryKeywords} = useAppSelector(s => s.galleryState);
     const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error, pageNumber, totalPages})
 
@@ -75,6 +75,7 @@ export default function History() {
                             if (chosenKeyword === i) {
                                 setChosenKeyword(-1)
                             } else {
+                                setPageNumber(1)
                                 setChosenKeyword(i)
                             }
                         }}

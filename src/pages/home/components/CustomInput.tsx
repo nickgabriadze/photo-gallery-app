@@ -1,22 +1,25 @@
 import homeStyling from '../home.module.css';
 import {useAppDispatch} from "../../../store/toolkitHooks.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {updateCurrentlySearchingFor} from "../../../store/features/galleryStateReducer.ts";
 
 
-export function CustomInput() {
+export function CustomInput({setPageNumberFunction}: {
+    setPageNumberFunction: React.Dispatch<React.SetStateAction<number>>
+}) {
     const dispatch = useAppDispatch();
     const [placeHolderValue, setPlaceholderValue] = useState<string>('');
     useEffect(() => {
 
         const timeOut = setTimeout(() => {
-          if(placeHolderValue.trim().length !== 0){
-              dispatch(updateCurrentlySearchingFor(placeHolderValue))
-          }
+            if (placeHolderValue.trim().length !== 0) {
+                setPageNumberFunction(1)
+                dispatch(updateCurrentlySearchingFor(placeHolderValue))
+            }
         }, 500)
 
         return () => clearTimeout(timeOut);
-    }, [placeHolderValue, dispatch]);
+    }, [placeHolderValue, dispatch, setPageNumberFunction]);
 
     return <input className={homeStyling['custom-input']} type={"Text"}
                   value={placeHolderValue}

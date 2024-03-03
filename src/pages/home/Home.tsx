@@ -22,7 +22,7 @@ export function Homepage() {
     const dispatch = useAppDispatch();
     const [error, setError] = useState<boolean>(false);
     const {inCurrentView, cache, currentlySearchingFor} = useAppSelector(s => s.galleryState)
-    const [totalPages, setTotalPages] = useState<number>(2);
+    const [totalPages, setTotalPages] = useState<number | "UNLIMITED">("UNLIMITED");
     useEffect(() => {
         setPicturesData([])
         setPageNumber(1)
@@ -89,6 +89,11 @@ export function Homepage() {
         }
     }, [pageNumber, currentlySearchingFor]);
 
+    useEffect(() => {
+        scrollTo(0,0)
+    }, [currentlySearchingFor]);
+
+
     return <main>
 
         {inCurrentView !== null && <UnsplashPictureBoxModel/>}
@@ -96,7 +101,7 @@ export function Homepage() {
         <div className={homeStyling['searching-field']}>
             <div className={homeStyling["icon-input-field"]}>
                 <img src={UnsplashIcon} width={40} height={40} alt={"Unsplash icon"}/>
-                <CustomInput/>
+                <CustomInput setPageNumberFunction={setPageNumber}/>
             </div>
             <nav>
                 <Link to={'/history'} className={homeStyling['go-to-history-link']}>HISTORY</Link>
