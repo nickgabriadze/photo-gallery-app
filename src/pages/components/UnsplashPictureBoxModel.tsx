@@ -68,7 +68,7 @@ export function UnsplashPictureBoxModel() {
                         <div className={pictureBoxStyling['unsplash-pic-stats']}>
                             <div>
                                 <img alt={'Likes Icon'} src={LikesIcon} width={20} height={20}></img>
-                                <p>{Number(picStats?.likes.total)}</p>
+                                <p>{Number(inCurrentViewID?.n_likes)}</p>
                             </div>
                             <div>
                                 <img alt={'Views Icon'} src={ViewsIcon} width={20} height={20}></img>

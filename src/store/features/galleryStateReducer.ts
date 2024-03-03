@@ -34,7 +34,8 @@ export const galleryState = createSlice({
                 inCurrentView: action.payload.length === 0 ? null : {
                     id: action.payload[0],
                     img_url: action.payload[1],
-                    description: action.payload[2]
+                    description: action.payload[2],
+                    n_likes: action.payload[3]
                 }
             }
         },

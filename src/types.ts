@@ -8,7 +8,8 @@ export type GalleryState = {
     inCurrentView: null | {
         id: string,
         img_url: string,
-        description: string
+        description: string,
+        n_likes: string
     },
     cache: { [key: string]: UnsplashPhoto[] }
 

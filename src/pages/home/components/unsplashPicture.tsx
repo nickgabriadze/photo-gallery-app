@@ -9,7 +9,7 @@ const UnsplashPicture = forwardRef(function UnsplashPicture({eachPicture}: { eac
 
     return (
         <div className={homeStyling['unsplash-pic-wrapper']} ref={ref}
-        onClick={() => dispatch(setInCurrentView([String(eachPicture?.id), String(eachPicture?.urls.regular), String(eachPicture?.alt_description)]))}
+        onClick={() => dispatch(setInCurrentView([String(eachPicture?.id), String(eachPicture?.urls.regular), String(eachPicture?.alt_description), String(eachPicture?.likes)]))}
         >
             <img src={eachPicture?.urls.regular}
                  width={Number(eachPicture?.width) / 10}
