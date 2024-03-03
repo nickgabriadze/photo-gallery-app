@@ -5,6 +5,11 @@ main {
     align-items: center;
     flex-direction: column;
     margin: 10px;
+
+    & h3 {
+        font-family: 'Open Sans', sans-serif;
+        text-decoration: underline;
+    }
 }
 
 .history-keywords{
@@ -12,9 +17,10 @@ main {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 3px;
     padding: 10px;
     width: 60%;
+
 
     & h4{
         font-family: 'system-ui', sans-serif;
@@ -31,17 +37,24 @@ main {
     & hr {
         border-radius:  100%;
         outline: 1px solid #424141;
-        padding: 2px;
+
+        border: 1px solid white;
+
+        width: 40px;
+        margin: auto;
         box-shadow: 1px 1px 0 2px #424141 ;
         background-color: #424141;
     }
+
+
 }
 
 
 .each-keyword:hover{
-    scale: 1.02;
+    outline: 1px solid black;
 
 }
+
 
 .each-keyword, h3, .go-back-link{
     font-family: 'Open Sans', sans-serif;

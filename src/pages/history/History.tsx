@@ -19,10 +19,11 @@ export default function History() {
     const [historyPictures, setHistoryPictures] = useState<UnsplashPhoto[]>([]);
     const observingPicture = useRef<null | IntersectionObserver>(null)
     const [error, setError] = useState<boolean>(false);
-    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
     const dispatch = useAppDispatch();
-
+    const [totalPages, setTotalPages] = useState<number>(2);
     const {cache, inCurrentView, searchHistoryKeywords} = useAppSelector(s => s.galleryState);
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error, pageNumber, totalPages})
+
     useEffect(() => {
         setHistoryPictures([])
         dispatch(setInCurrentView([]))
@@ -36,9 +37,10 @@ export default function History() {
                 try {
                     setLoading(true)
                     const request = await getPhotosUsingSearchKeyword(searchHistoryKeywords[chosenKeyword], pageNumber)
-                    const data = request.data.results;
+                    const data = request.data;
                     if (request.status === 200) {
-                        setHistoryPictures((prev) => [...prev, ...data])
+                        setHistoryPictures((prev) => [...prev, ...data.results])
+                        setTotalPages(data.total_pages)
                     }
                 } catch (e) {
                     setError(true)

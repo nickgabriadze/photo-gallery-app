@@ -1,4 +1,3 @@
-
 export type Page = "Home" | "History";
 export type HistoryKeywords = string[];
 
@@ -11,7 +10,7 @@ export type GalleryState = {
         img_url: string,
         description: string
     },
-    cache:{[key:string]: UnsplashPhoto[]}
+    cache: { [key: string]: UnsplashPhoto[] }
 
 }
 
@@ -28,7 +27,7 @@ export type UnsplashPhoto = {
     liked_by_user: boolean,
     likes: number,
     updated_at: string,
-    urls:{
+    urls: {
         full: string,
         raw: string,
         regular: string,
@@ -40,13 +39,13 @@ export type UnsplashPhoto = {
 
 export type UnsplashPhotoStats = {
     id: string,
-    downloads:{
+    downloads: {
         total: number
     },
-    views:{
+    views: {
         total: number
     },
-    likes:{
+    likes: {
         total: number
     }
 }

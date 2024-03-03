@@ -22,6 +22,7 @@ export function Homepage() {
     const dispatch = useAppDispatch();
     const [error, setError] = useState<boolean>(false);
     const {inCurrentView, cache, currentlySearchingFor} = useAppSelector(s => s.galleryState)
+    const [totalPages, setTotalPages] = useState<number>(2);
     useEffect(() => {
         setPicturesData([])
         setPageNumber(1)
@@ -32,15 +33,17 @@ export function Homepage() {
         try {
             setLoading(true)
             const request = await getPhotosUsingSearchKeyword(currentlySearching, pageNumber);
-            const data = request.data.results;
+            const data = request.data;
+
             if (request.status === 200) {
                 if (pageNumber > 1 && !error) {
-                    setPicturesData((prev) => [...prev, ...data])
+                    setPicturesData((prev) => [...prev, ...data.results])
+                    setTotalPages(data.total_pages)
                 } else {
-                    setPicturesData(data)
+                    setPicturesData(data.results)
                     dispatch(setCache({
                         keyword: currentlySearching,
-                        data: data
+                        data: data.results
                     }))
                 }
             }
@@ -60,6 +63,7 @@ export function Homepage() {
             if (request.status === 200) {
                 if (pageNumber > 1 && !error) {
                     setPicturesData((prev) => [...prev, ...data])
+
                 } else {
                     setPicturesData(data)
                 }
@@ -70,7 +74,7 @@ export function Homepage() {
             setLoading(false);
         }
     }
-    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error})
+    const {lastPictureFetch} = useLastPictureObserver({loading, observingPicture, setPageNumber, error, pageNumber, totalPages})
 
     useEffect(() => {
         if (currentlySearchingFor.trim().length !== 0) {
@@ -100,7 +104,7 @@ export function Homepage() {
 
         </div>
         <div className={homeStyling['unsplash-pictures']}>
-            {picturesData.map((eachPicture, i) => {
+            {picturesData && picturesData.map((eachPicture, i) => {
 
                 return <UnsplashPicture eachPicture={eachPicture}
                                         key={v4()}
